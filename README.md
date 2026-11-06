@@ -40,7 +40,8 @@ pip install git+https://github.com/yashere69/parda
 parda demo
 ```
 
-No dependencies outside the standard library.
+No dependencies outside the standard library. 800 KB of text with 50,000 identifiers
+redacts in about a third of a second.
 
 ## What it finds
 
@@ -58,6 +59,10 @@ No dependencies outside the standard library.
 Numbers in Devanagari digits (`९८७६५`) and spoken numbers in English, romanised Hindi or
 Devanagari words ("nau aath double saat…", "नौ आठ सात…") are handled too. When spans
 overlap, the longest wins, so a GSTIN isn't also reported as the PAN inside it.
+
+For chat-completions calls, `p.redact_messages(messages)` returns a redacted copy of the
+whole message list through one vault, so the same number in turn 1 and turn 5 is the same
+token and the model can still tell they're the same.
 
 Already running Presidio or a name recogniser? Pass its spans in as `extra=` and parda
 tokenises those too: `p.redact(text, extra=[Span(0, 11, "NAME", "Asha Sharma")])`.
@@ -83,7 +88,8 @@ The misses are real limits, not noise:
   in Indian chats, but it happens.
 - **Phone precision**: a 10-digit order id starting with 6–9 looks exactly like a mobile
   number, so parda redacts it. That fails safe (the model just sees a token), but your
-  agent loses the order id unless you whitelist the format.
+  agent loses the order id unless you tell parda your format:
+  `Parda(ignore=[r"7\d{9}"])`, or `--ignore` on the CLI.
 - **PIN recall**: without a cue word, "Dehradun 248001" is left alone on purpose. Six
   digits on their own are too often prices, quantities or codes.
 
