@@ -8,6 +8,7 @@ reported once as a GSTIN, and a UPI ID like 9876543210@ybl as UPI, not PHONE.
 from __future__ import annotations
 
 import re
+from bisect import bisect_left
 from collections.abc import Callable
 from dataclasses import dataclass
 
@@ -101,14 +102,38 @@ DETECTORS: list[Detector] = [
 ]
 
 
-def detect(text: str, extra: list[Span] | None = None) -> list[Span]:
-    """All non-overlapping spans, longest first wins. `extra` lets you merge spans from
-    another detector (Presidio, a name recogniser) into the same pass."""
+def detect(
+    text: str,
+    extra: list[Span] | None = None,
+    ignore: list[re.Pattern[str]] | None = None,
+) -> list[Span]:
+    """All non-overlapping spans, longest first wins.
+
+    `extra` merges spans from another detector (Presidio, a name recogniser) into the same
+    pass. `ignore` drops any span whose matched text fully matches one of the patterns:
+    your own order-id format, say, which would otherwise look like a phone number.
+    """
     ascii_text = to_ascii_digits(text)
     spans = [s for det in DETECTORS for s in det(text, ascii_text)] + list(extra or [])
+    if ignore:
+        spans = [
+            s
+            for s in spans
+            if not any(rx.fullmatch(text[s.start : s.end].strip()) for rx in ignore)
+        ]
     spans.sort(key=lambda s: (-(s.end - s.start), s.start))
+    # Keep a span only if it doesn't overlap one already kept. `starts` stays sorted, so each
+    # check is a bisect against the two neighbours instead of a scan of everything kept.
+    starts: list[int] = []
+    ends: list[int] = []
     taken: list[Span] = []
     for s in spans:
-        if all(s.end <= t.start or s.start >= t.end for t in taken):
-            taken.append(s)
+        i = bisect_left(starts, s.start)
+        if i > 0 and ends[i - 1] > s.start:
+            continue
+        if i < len(starts) and starts[i] < s.end:
+            continue
+        starts.insert(i, s.start)
+        ends.insert(i, s.end)
+        taken.append(s)
     return sorted(taken, key=lambda s: s.start)
