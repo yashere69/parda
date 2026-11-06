@@ -92,8 +92,9 @@ DETECTORS: list[Detector] = [
     _regex("EMAIL", _EMAIL, lambda r: True, str.lower),
     _regex("UPI", _UPI, lambda r: True, str.lower),
     _regex("AADHAAR", _AADHAAR, lambda r: aadhaar_valid(_digits(r)), _digits),
-    _regex("CARD", _CARD, lambda r: 13 <= len(_digits(r)) <= 19 and luhn_valid(_digits(r)),
-           _digits),
+    _regex(
+        "CARD", _CARD, lambda r: 13 <= len(_digits(r)) <= 19 and luhn_valid(_digits(r)), _digits
+    ),
     _regex("PHONE", _PHONE, lambda r: True, _phone_value),
     _pin,
     _spoken,

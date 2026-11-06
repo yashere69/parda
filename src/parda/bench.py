@@ -21,7 +21,7 @@ from collections.abc import Callable
 from dataclasses import dataclass
 
 from .checksums import gstin_check_char, verhoeff_check_digit
-from .vault import HINDI_LABELS, STYLES, Parda
+from .vault import HINDI_LABELS, Parda
 
 DEV = str.maketrans("0123456789", "०१२३४५६७८९")
 ENGLISH = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"]
@@ -54,14 +54,18 @@ def _phone(r: random.Random) -> str:
 
 
 def _upi(r: random.Random) -> str:
-    return r.choice(["asha.k", "ravi1990", "meera.s", "kabir_r"]) + "@" + r.choice(
-        ["okicici", "oksbi", "ybl", "paytm", "okaxis"]
+    return (
+        r.choice(["asha.k", "ravi1990", "meera.s", "kabir_r"])
+        + "@"
+        + r.choice(["okicici", "oksbi", "ybl", "paytm", "okaxis"])
     )
 
 
 def _ifsc(r: random.Random) -> str:
-    return r.choice(["HDFC", "SBIN", "ICIC", "UTIB"]) + "0" + "".join(
-        r.choice(string.digits) for _ in range(6)
+    return (
+        r.choice(["HDFC", "SBIN", "ICIC", "UTIB"])
+        + "0"
+        + "".join(r.choice(string.digits) for _ in range(6))
     )
 
 
@@ -142,9 +146,7 @@ def corpus(n: int = 600, seed: int = 7) -> list[Sample]:
                 n3=r.randint(100, 999),
                 n10x="AWB" + "".join(r.choice(string.digits) for _ in range(9)),
                 n10=r.choice("6789") + "".join(r.choice(string.digits) for _ in range(9)),
-                n12g=" ".join(
-                    "".join(r.choice(string.digits) for _ in range(4)) for _ in range(3)
-                ),
+                n12g=" ".join("".join(r.choice(string.digits) for _ in range(4)) for _ in range(3)),
             )
             out.append(Sample(text, [], "negative"))
             continue

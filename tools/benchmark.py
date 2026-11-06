@@ -1,7 +1,7 @@
 """Regenerate results/benchmark.md.
 
-    python tools/benchmark.py            # simulated round trip, no network
-    PARDA_API_KEY=... python tools/benchmark.py --endpoint https://api.openai.com/v1 --model gpt-4.1-mini
+python tools/benchmark.py            # simulated round trip, no network
+PARDA_API_KEY=... python tools/benchmark.py --endpoint <base-url> --model <name>
 """
 
 from __future__ import annotations

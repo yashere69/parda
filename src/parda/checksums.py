@@ -48,8 +48,11 @@ def verhoeff_check_digit(digits: str) -> str:
 
 def aadhaar_valid(digits: str) -> bool:
     """12 digits, not starting with 0 or 1, Verhoeff check digit correct."""
-    return len(digits) == 12 and digits.isdigit() and digits[0] not in "01" and (
-        verhoeff_valid(digits)
+    return (
+        len(digits) == 12
+        and digits.isdigit()
+        and digits[0] not in "01"
+        and (verhoeff_valid(digits))
     )
 
 
