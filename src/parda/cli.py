@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 
 from . import __version__
@@ -22,12 +23,23 @@ def main(argv: list[str] | None = None) -> int:
     r.add_argument("--text")
     r.add_argument("--style", choices=sorted(STYLES), default="bracket")
     r.add_argument("--show-spans", action="store_true", help="list what was found (to stderr)")
+    r.add_argument(
+        "--ignore",
+        action="append",
+        default=[],
+        metavar="REGEX",
+        help="never redact values that fully match this (e.g. your order-id format)",
+    )
     sub.add_parser("demo", help="redact, fake a model reply, restore")
     args = ap.parse_args(argv)
 
     if args.cmd == "redact":
         text = args.text if args.text is not None else sys.stdin.read()
-        p = Parda(style=args.style)
+        try:
+            p = Parda(style=args.style, ignore=args.ignore)
+        except re.error as e:
+            print(f"error: --ignore: {e}", file=sys.stderr)
+            return 2
         red = p.redact(text)
         sys.stdout.write(red.text if text.endswith("\n") or not red.text else red.text + "\n")
         if args.show_spans:

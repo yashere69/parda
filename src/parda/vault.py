@@ -50,10 +50,11 @@ class RestoreResult:
 
 
 class Parda:
-    def __init__(self, style: str = "bracket"):
+    def __init__(self, style: str = "bracket", ignore: list[str] | None = None):
         if style not in STYLES:
             raise ValueError(f"style must be one of {sorted(STYLES)}")
         self.style = style
+        self._ignore = [re.compile(p) for p in ignore or []]
         self._by_value: dict[tuple[str, str], str] = {}
         self._by_key: dict[tuple[str, int], str] = {}  # (kind, n) -> original value
         self._counts: dict[str, int] = {}
@@ -68,7 +69,7 @@ class Parda:
         return self._by_value[key]
 
     def redact(self, text: str, extra: list[Span] | None = None) -> Redacted:
-        spans = detect(text, extra)
+        spans = detect(text, extra, self._ignore)
         out, last, tokens = [], 0, {}
         for s in spans:
             tok = self._token(s.kind, s.value)
@@ -112,6 +113,22 @@ class Parda:
 
         return RestoreResult(self._pattern().sub(sub, text), restored, unknown)
 
+    def redact_messages(self, messages: list[dict]) -> list[dict]:
+        """Return a redacted copy of a chat-completions style message list.
+
+        Every message goes through the same vault, so a phone number in turn 1 and the same
+        number in turn 5 both become [PHONE_1]. That consistency is what lets the model
+        reason across a conversation. Non-string content (images, tool payloads) passes
+        through untouched.
+        """
+        out = []
+        for m in messages:
+            m = dict(m)
+            if isinstance(m.get("content"), str):
+                m["content"] = self.redact(m["content"]).text
+            out.append(m)
+        return out
+
     def leaks(self, outbound: str) -> list[Span]:
         """Identifiers still present in text you're about to send. Should be empty."""
-        return detect(outbound)
+        return detect(outbound, ignore=self._ignore)
