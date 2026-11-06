@@ -89,6 +89,10 @@ class Parda:
             re.I,
         )
 
+    def value_of(self, token: str) -> str | None:
+        m = re.fullmatch(r"\W*([A-Z]+)_(\d+)\W*", token)
+        return self._by_key.get((m.group(1), int(m.group(2)))) if m else None
+
     def restore(self, text: str) -> RestoreResult:
         restored = 0
         unknown: list[str] = []

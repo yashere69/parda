@@ -31,7 +31,7 @@ WORD_DIGITS = {
 REPEATERS = {"double": 2, "triple": 3, "डबल": 2, "ट्रिपल": 3}
 
 # Devanagari vowel signs are combining marks, not \w, so the script gets its own class.
-_TOKEN = re.compile(r"[0-9०-९]+|[\u0900-\u0965\u0970-\u097F]+|[^\W\d_]+")
+_TOKEN = re.compile(r"[0-9०-९]+|[\u0900-\u0963\u0970-\u097F]+|[^\W\d_]+")
 _GAP = re.compile(r"^[\s,.\-/]*$")
 
 
