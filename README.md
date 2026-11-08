@@ -185,7 +185,7 @@ Experimental: the context-word lists, and `leaks()`.
 
 ```bash
 pip install -e ".[dev]"
-ruff check . && mypy src && pytest
+ruff check . && ruff format --check . && mypy src && pytest
 ```
 
 Example identifiers in the tests and the benchmark are generated so that their check digits
