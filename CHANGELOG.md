@@ -4,6 +4,8 @@
 
 - Output is UTF-8 even when redirected on Windows, where it used to follow the code page
   and fail on Devanagari text.
+- `parda redact` reads stdin as UTF-8 bytes, so text piped in on Windows isn't decoded
+  with the code page and redacted as mojibake.
 - CI runs the tests on Windows and macOS as well as Linux.
 
 ## 0.3.0

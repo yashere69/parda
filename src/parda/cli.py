@@ -45,7 +45,10 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
 
     if args.cmd == "redact":
-        text = args.text if args.text is not None else sys.stdin.read()
+        if args.text is not None:
+            text = args.text
+        else:  # bytes, so a Windows code page can't mangle Devanagari on the way in
+            text = sys.stdin.buffer.read().decode("utf-8-sig")
         try:
             p = Parda(style=args.style, ignore=args.ignore)
         except re.error as e:
