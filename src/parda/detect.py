@@ -34,7 +34,19 @@ _IFSC = re.compile(rf"{_B}[A-Z]{{4}}0[A-Z0-9]{{6}}{_E}", re.I)
 _EMAIL = re.compile(rf"{_B}[\w.+-]+@[\w-]+(\.[\w-]+)+{_E}")
 _UPI = re.compile(rf"{_B}[\w.-]{{2,256}}@[a-zA-Z][a-zA-Z0-9]{{1,63}}(?![\w@.])")
 _AADHAAR = re.compile(rf"{_B}[2-9][0-9]{{3}}[ -]?[0-9]{{4}}[ -]?[0-9]{{4}}{_E}")
-_PHONE = re.compile(rf"{_B}(?:\+?91[ -]?|0)?[6-9][0-9]{{4}}[ -]?[0-9]{{5}}{_E}")
+_PHONE = re.compile(
+    rf"{_B}(?:\+?91[ -]?|0)?"
+    rf"(?:[6-9][0-9]{{4}}[ -]?[0-9]{{5}}|[6-9][0-9]{{2}}[ .-][0-9]{{3}}[ .-][0-9]{{4}}){_E}"
+)
+# A ten-digit number right after one of these is a reference, not a phone: "order id
+# 8561304451". The nearest keyword before the number decides, so "order ke liye call karo
+# 98765 43210" is still a phone. Account numbers are deliberately not in the list.
+_REFERENCE = re.compile(
+    r"\b(order|invoice|inv|awb|tracking|track|ref|reference|txn|transaction|utr|booking"
+    r"|pnr|ticket|receipt|consignment|docket|shipment|sku)\b|ऑर्डर",
+    re.I,
+)
+_CALLABLE = re.compile(r"\b(call|phone|mobile|mob|whatsapp|contact|cell|sms)\b|फोन|कॉल", re.I)
 _CARD = re.compile(rf"{_B}(?:[0-9][ -]?){{12,18}}[0-9]{_E}")
 _PIN = re.compile(rf"{_B}[1-9][0-9]{{2}} ?[0-9]{{3}}{_E}")
 _PIN_CONTEXT = re.compile(r"\b(pin|pincode|pin code|postal|zip)\b|पिन", re.I)
@@ -62,6 +74,42 @@ def _regex(kind: str, rx: re.Pattern[str], ok: Callable[[str], bool], canon: Cal
         return out
 
     return run
+
+
+def _phone(original: str, ascii_text: str) -> list[Span]:
+    out = []
+    for m in _PHONE.finditer(ascii_text):
+        window = ascii_text[max(0, m.start() - 30) : m.start()]
+        ref = [x.end() for x in _REFERENCE.finditer(window)]
+        call = [x.end() for x in _CALLABLE.finditer(window)]
+        if ref and (not call or ref[-1] > call[-1]):
+            continue
+        out.append(Span(m.start(), m.end(), "PHONE", _phone_value(m.group())))
+    return out
+
+
+_AADHAAR_WORDS = re.compile(r"\b(aadhaar|aadhar|adhar|uid|uidai|kyc)\b|आधार", re.I)
+_PHONE_PREFIX = re.compile(r"(\+|wa\.me/|tel:)$", re.I)
+
+
+def _aadhaar(original: str, ascii_text: str) -> list[Span]:
+    """Twelve digits with a valid Verhoeff check digit, unless they read as 91 plus a mobile
+    number in a phone context: one in ten +91 numbers passes the Aadhaar check by chance."""
+    out = []
+    for m in _AADHAAR.finditer(ascii_text):
+        d = _digits(m.group())
+        if not aadhaar_valid(d):
+            continue
+        if d.startswith("91") and d[2] in "6789":
+            before = ascii_text[max(0, m.start() - 30) : m.start()]
+            said_aadhaar = [x.end() for x in _AADHAAR_WORDS.finditer(before)]
+            said_phone = [x.end() for x in _CALLABLE.finditer(before)]
+            if _PHONE_PREFIX.search(before) or (
+                said_phone and (not said_aadhaar or said_phone[-1] > said_aadhaar[-1])
+            ):
+                continue
+        out.append(Span(m.start(), m.end(), "AADHAAR", d))
+    return out
 
 
 def _pin(original: str, ascii_text: str) -> list[Span]:
@@ -92,11 +140,11 @@ DETECTORS: list[Detector] = [
     _regex("IFSC", _IFSC, lambda r: True, str.upper),
     _regex("EMAIL", _EMAIL, lambda r: True, str.lower),
     _regex("UPI", _UPI, lambda r: True, str.lower),
-    _regex("AADHAAR", _AADHAAR, lambda r: aadhaar_valid(_digits(r)), _digits),
+    _aadhaar,
     _regex(
         "CARD", _CARD, lambda r: 13 <= len(_digits(r)) <= 19 and luhn_valid(_digits(r)), _digits
     ),
-    _regex("PHONE", _PHONE, lambda r: True, _phone_value),
+    _phone,
     _pin,
     _spoken,
 ]

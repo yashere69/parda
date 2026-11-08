@@ -1,0 +1,105 @@
+{"text": "bhaiya mera alternate no. 65881 39986 hai", "truth": [["PHONE", "6588139986"]]}
+{"text": "bhaiya mera alternate no. 77317 78486 hai", "truth": [["PHONE", "7731778486"]]}
+{"text": "bhaiya mera alternate no. 92837 92984 hai", "truth": [["PHONE", "9283792984"]]}
+{"text": "delivery boy ko bolo 91642-52477 pe ring kare", "truth": [["PHONE", "9164252477"]]}
+{"text": "delivery boy ko bolo 90013-04118 pe ring kare", "truth": [["PHONE", "9001304118"]]}
+{"text": "delivery boy ko bolo 94230-04876 pe ring kare", "truth": [["PHONE", "9423004876"]]}
+{"text": "contact: +91-7811265844", "truth": [["PHONE", "7811265844"]]}
+{"text": "contact: +91-9443256885", "truth": [["PHONE", "9443256885"]]}
+{"text": "contact: +91-6031450378", "truth": [["PHONE", "6031450378"]]}
+{"text": "mobile number badal gaya, naya wala 06889575552", "truth": [["PHONE", "6889575552"]]}
+{"text": "mobile number badal gaya, naya wala 07528070015", "truth": [["PHONE", "7528070015"]]}
+{"text": "mobile number badal gaya, naya wala 06854177588", "truth": [["PHONE", "6854177588"]]}
+{"text": "मेरा फोन नंबर ६८७२४३८५४६ है", "truth": [["PHONE", "6872438546"]]}
+{"text": "मेरा फोन नंबर ९०८५३८६७१३ है", "truth": [["PHONE", "9085386713"]]}
+{"text": "मेरा फोन नंबर ६३७२९८७११२ है", "truth": [["PHONE", "6372987112"]]}
+{"text": "call me at 809 342 6927 tomorrow", "truth": [["PHONE", "8093426927"]]}
+{"text": "call me at 615 276 1138 tomorrow", "truth": [["PHONE", "6152761138"]]}
+{"text": "call me at 887 464 3972 tomorrow", "truth": [["PHONE", "8874643972"]]}
+{"text": "is number pe whatsapp karo 9198890421 pls", "truth": [["PHONE", "9198890421"]]}
+{"text": "is number pe whatsapp karo 7541488181 pls", "truth": [["PHONE", "7541488181"]]}
+{"text": "is number pe whatsapp karo 9865893059 pls", "truth": [["PHONE", "9865893059"]]}
+{"text": "aadhar card no 3723 3496 7703", "truth": [["AADHAAR", "372334967703"]]}
+{"text": "aadhar card no 2091 7039 2736", "truth": [["AADHAAR", "209170392736"]]}
+{"text": "aadhar card no 9929 9239 8131", "truth": [["AADHAAR", "992992398131"]]}
+{"text": "Aadhaar: 404262837091", "truth": [["AADHAAR", "404262837091"]]}
+{"text": "Aadhaar: 750135100636", "truth": [["AADHAAR", "750135100636"]]}
+{"text": "Aadhaar: 322238637871", "truth": [["AADHAAR", "322238637871"]]}
+{"text": "आधार नंबर ८४४४ ६९४० ३७२०", "truth": [["AADHAAR", "844469403720"]]}
+{"text": "आधार नंबर ४०६२ ४४३१ ७७४७", "truth": [["AADHAAR", "406244317747"]]}
+{"text": "आधार नंबर ४५६५ ७९८३ ७१७६", "truth": [["AADHAAR", "456579837176"]]}
+{"text": "kyc docs - aadhaar 7157-5392-1022", "truth": [["AADHAAR", "715753921022"]]}
+{"text": "kyc docs - aadhaar 6056-1357-5060", "truth": [["AADHAAR", "605613575060"]]}
+{"text": "kyc docs - aadhaar 8641-2202-8487", "truth": [["AADHAAR", "864122028487"]]}
+{"text": "pan card kbkfb7778z hai mera", "truth": [["PAN", "KBKFB7778Z"]]}
+{"text": "pan card qfjpd4335s hai mera", "truth": [["PAN", "QFJPD4335S"]]}
+{"text": "pan card lkopw2348r hai mera", "truth": [["PAN", "LKOPW2348R"]]}
+{"text": "PAN no. QAKCQ6051V, GST bill chahiye", "truth": [["PAN", "QAKCQ6051V"]]}
+{"text": "PAN no. NALFV1885R, GST bill chahiye", "truth": [["PAN", "NALFV1885R"]]}
+{"text": "PAN no. UGOCY3663A, GST bill chahiye", "truth": [["PAN", "UGOCY3663A"]]}
+{"text": "GST number: 31YGCCI8919Q3Z0", "truth": [["GSTIN", "31YGCCI8919Q3Z0"]]}
+{"text": "GST number: 17YTVFP9162V1ZY", "truth": [["GSTIN", "17YTVFP9162V1ZY"]]}
+{"text": "GST number: 03BLBPW9775O2Z4", "truth": [["GSTIN", "03BLBPW9775O2Z4"]]}
+{"text": "hamara gstin 10REKPP0146L2Z5 hai, invoice pe daal dena", "truth": [["GSTIN", "10REKPP0146L2Z5"]]}
+{"text": "hamara gstin 21GBTCL2111Y1ZN hai, invoice pe daal dena", "truth": [["GSTIN", "21GBTCL2111Y1ZN"]]}
+{"text": "hamara gstin 05QALFH5019D3Z7 hai, invoice pe daal dena", "truth": [["GSTIN", "05QALFH5019D3Z7"]]}
+{"text": "paise asha.k@okicici pe transfer kar do", "truth": [["UPI", "asha.k@okicici"]]}
+{"text": "paise asha.k@ybl pe transfer kar do", "truth": [["UPI", "asha.k@ybl"]]}
+{"text": "paise meera.s@ybl pe transfer kar do", "truth": [["UPI", "meera.s@ybl"]]}
+{"text": "gpay id: meera.s@okaxis", "truth": [["UPI", "meera.s@okaxis"]]}
+{"text": "gpay id: asha.k@okaxis", "truth": [["UPI", "asha.k@okaxis"]]}
+{"text": "gpay id: asha.k@ybl", "truth": [["UPI", "asha.k@ybl"]]}
+{"text": "bank IFSC code UTIB0347698", "truth": [["IFSC", "UTIB0347698"]]}
+{"text": "bank IFSC code SBIN0923911", "truth": [["IFSC", "SBIN0923911"]]}
+{"text": "bank IFSC code SBIN0579081", "truth": [["IFSC", "SBIN0579081"]]}
+{"text": "pin code 783216", "truth": [["PIN", "783216"]]}
+{"text": "pin code 207768", "truth": [["PIN", "207768"]]}
+{"text": "pin code 308724", "truth": [["PIN", "308724"]]}
+{"text": "address - 12 Rajpur Road, Dehradun, PIN 777994", "truth": [["PIN", "777994"]]}
+{"text": "address - 12 Rajpur Road, Dehradun, PIN 791382", "truth": [["PIN", "791382"]]}
+{"text": "address - 12 Rajpur Road, Dehradun, PIN 634435", "truth": [["PIN", "634435"]]}
+{"text": "UTR 7406863037 se payment kiya hai", "truth": []}
+{"text": "UTR 8682782554 se payment kiya hai", "truth": []}
+{"text": "UTR 7857299584 se payment kiya hai", "truth": []}
+{"text": "AWB no 7559022297 track nahi ho raha", "truth": []}
+{"text": "AWB no 8311305717 track nahi ho raha", "truth": []}
+{"text": "AWB no 8470677805 track nahi ho raha", "truth": []}
+{"text": "invoice #9853042772 ka copy bhejo", "truth": []}
+{"text": "invoice #6766752590 ka copy bhejo", "truth": []}
+{"text": "invoice #8421208083 ka copy bhejo", "truth": []}
+{"text": "booking ref 8415374183", "truth": []}
+{"text": "booking ref 8878115856", "truth": []}
+{"text": "booking ref 9915893756", "truth": []}
+{"text": "total ₹6860 hua, discount ke baad ₹697", "truth": []}
+{"text": "total ₹2291 hua, discount ke baad ₹258", "truth": []}
+{"text": "total ₹2559 hua, discount ke baad ₹955", "truth": []}
+{"text": "OTP 789512 aaya hai, kisi ko mat batana", "truth": []}
+{"text": "OTP 081818 aaya hai, kisi ko mat batana", "truth": []}
+{"text": "OTP 522526 aaya hai, kisi ko mat batana", "truth": []}
+{"text": "delivery 15/11/2026 tak ho jayegi", "truth": []}
+{"text": "delivery 15/11/2026 tak ho jayegi", "truth": []}
+{"text": "delivery 15/11/2026 tak ho jayegi", "truth": []}
+{"text": "item code SKU-933673-BLU", "truth": []}
+{"text": "item code SKU-681795-BLU", "truth": []}
+{"text": "item code SKU-764173-BLU", "truth": []}
+{"text": "2 kurte size 42 aur 44", "truth": []}
+{"text": "2 kurte size 42 aur 44", "truth": []}
+{"text": "2 kurte size 42 aur 44", "truth": []}
+{"text": "order no 6063915510 cancel karna hai", "truth": []}
+{"text": "order no 7221393392 cancel karna hai", "truth": []}
+{"text": "order no 6987991510 cancel karna hai", "truth": []}
+{"text": "landline pe call karo 0135-9521279", "truth": [["PHONE", "1359521279"]]}
+{"text": "landline pe call karo 0135-4363878", "truth": [["PHONE", "1354363878"]]}
+{"text": "landline pe call karo 0135-4962359", "truth": [["PHONE", "1354962359"]]}
+{"text": "number aise likha tha: 99-05-51-21-92", "truth": [["PHONE", "9905512192"]]}
+{"text": "number aise likha tha: 91-39-82-65-86", "truth": [["PHONE", "9139826586"]]}
+{"text": "number aise likha tha: 70-85-39-57-28", "truth": [["PHONE", "7085395728"]]}
+{"text": "chat here wa.me/916546507669", "truth": [["PHONE", "6546507669"]]}
+{"text": "chat here wa.me/918019130616", "truth": [["PHONE", "8019130616"]]}
+{"text": "chat here wa.me/919982168691", "truth": [["PHONE", "9982168691"]]}
+{"text": "(+91) 71072 08495", "truth": [["PHONE", "7107208495"]]}
+{"text": "(+91) 74723 26278", "truth": [["PHONE", "7472326278"]]}
+{"text": "(+91) 63351 23666", "truth": [["PHONE", "6335123666"]]}
+{"text": "aadhaar XXXX XXXX 6795 wala card", "truth": []}
+{"text": "aadhaar XXXX XXXX 5889 wala card", "truth": []}
+{"text": "aadhaar XXXX XXXX 3245 wala card", "truth": []}
