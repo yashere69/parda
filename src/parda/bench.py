@@ -19,6 +19,7 @@ import string
 import urllib.request
 from collections.abc import Callable
 from dataclasses import dataclass
+from pathlib import Path
 
 from .checksums import gstin_check_char, verhoeff_check_digit
 from .vault import HINDI_LABELS, Parda
@@ -276,42 +277,93 @@ def false_restores(samples: list[Sample]) -> int:
     return bad
 
 
-def live_roundtrip(samples: list[Sample], endpoint: str, model: str, limit: int = 30) -> dict:
-    """Send redacted messages to a real model and check its reply restores cleanly.
+SYSTEM_PROMPT = (
+    "You are a support agent. Reply in Hindi, briefly, and confirm the customer's details "
+    "back to them exactly as given."
+)
 
-    Uses the OpenAI-compatible /chat/completions API; the key comes from PARDA_API_KEY.
-    """
+
+def _ask(endpoint: str, model: str, text: str) -> str:
     key = os.environ.get("PARDA_API_KEY", "")
-    results = {"sent": 0, "all_restored": 0, "dropped": 0, "unknown_tokens": 0}
-    for s in [s for s in samples if s.truth][:limit]:
-        p = Parda()
-        red = p.redact(s.text)
-        if not red.spans:
-            continue
-        body = {
-            "model": model,
-            "messages": [
-                {
-                    "role": "system",
-                    "content": "You are a support agent. Reply in Hindi, briefly, and confirm "
-                    "the customer's details back to them exactly as given.",
-                },
-                {"role": "user", "content": red.text},
-            ],
-        }
-        req = urllib.request.Request(
-            endpoint.rstrip("/") + "/chat/completions",
-            data=json.dumps(body).encode(),
-            headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
-        )
-        with urllib.request.urlopen(req, timeout=60) as r:
-            reply = json.load(r)["choices"][0]["message"]["content"]
-        res = p.restore(reply)
-        results["sent"] += 1
-        values = {sp.value for sp in red.spans}
-        if all(v in res.text for v in values):
-            results["all_restored"] += 1
-        elif res.restored == 0:
-            results["dropped"] += 1
-        results["unknown_tokens"] += len(res.unknown)
+    body = {
+        "model": model,
+        "messages": [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "user", "content": text},
+        ],
+    }
+    req = urllib.request.Request(
+        endpoint.rstrip("/") + "/chat/completions",
+        data=json.dumps(body).encode(),
+        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+    )
+    with urllib.request.urlopen(req, timeout=60) as r:
+        return json.load(r)["choices"][0]["message"]["content"]
+
+
+def live_roundtrip(
+    samples: list[Sample],
+    endpoint: str | None = None,
+    model: str | None = None,
+    limit: int = 30,
+    record: Path | None = None,
+    replay: Path | None = None,
+) -> dict:
+    """Send redacted messages to a real model and check that its reply restores cleanly.
+
+    Any OpenAI-compatible /chat/completions endpoint works, including a local Ollama or
+    llama.cpp server; the key, if one is needed, comes from PARDA_API_KEY. `record` saves
+    every message and reply as JSON lines; `replay` scores a saved file again without a
+    model, so a run can be re-checked after parda changes, or shared.
+    """
+    results = {
+        "sent": 0,
+        "all_restored": 0,
+        "partly_restored": 0,
+        "dropped": 0,
+        "unknown_tokens": 0,
+        "errors": 0,
+    }
+    if replay:
+        rows = [json.loads(x) for x in replay.read_text(encoding="utf-8").splitlines() if x]
+        pairs = [(row["message"], row.get("reply")) for row in rows]
+    else:
+        if not (endpoint and model):
+            raise ValueError("a live run needs an endpoint and a model (or replay a file)")
+        pairs = [(s.text, None) for s in samples if s.truth][:limit]
+    out = record.open("w", encoding="utf-8") if record else None
+    try:
+        for message, reply in pairs:
+            p = Parda()
+            red = p.redact(message)
+            if not red.spans:
+                continue
+            if reply is None and not replay:
+                try:
+                    reply = _ask(endpoint or "", model or "", red.text)
+                except (OSError, KeyError, ValueError) as e:  # network, HTTP, odd JSON
+                    results["errors"] += 1
+                    if out:
+                        out.write(json.dumps({"message": message, "error": str(e)}) + "\n")
+                    continue
+            if reply is None:
+                results["errors"] += 1
+                continue
+            if out:
+                row = {"model": model, "message": message, "redacted": red.text, "reply": reply}
+                out.write(json.dumps(row, ensure_ascii=False) + "\n")
+            res = p.restore(reply)
+            results["sent"] += 1
+            values = {sp.value for sp in red.spans}
+            back = sum(v in res.text for v in values)
+            if back == len(values):
+                results["all_restored"] += 1
+            elif back:
+                results["partly_restored"] += 1
+            else:
+                results["dropped"] += 1
+            results["unknown_tokens"] += len(res.unknown)
+    finally:
+        if out:
+            out.close()
     return results

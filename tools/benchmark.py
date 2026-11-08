@@ -22,8 +22,12 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--n", type=int, default=600)
     ap.add_argument("--seed", type=int, default=7)
-    ap.add_argument("--endpoint")
+    ap.add_argument("--endpoint", help="OpenAI-compatible base URL, e.g. http://localhost:11434/v1")
     ap.add_argument("--model")
+    ap.add_argument("--record", type=Path, help="save each message and reply as JSONL")
+    ap.add_argument(
+        "--replay", type=Path, help="score a saved JSONL run instead of calling a model"
+    )
     args = ap.parse_args()
 
     samples = corpus(args.n, args.seed)
@@ -67,16 +71,22 @@ def main() -> None:
         f"Replies mentioning a token index that was never issued and still got a value "
         f"filled in: {false_restores(samples)}.",
     ]
-    if args.endpoint and args.model:
-        live = live_roundtrip(samples, args.endpoint, args.model)
+    if args.replay or (args.endpoint and args.model):
+        live = live_roundtrip(
+            samples, args.endpoint, args.model, record=args.record, replay=args.replay
+        )
+        name = args.model or f"replay of {args.replay}"
         lines += [
             "",
-            f"## Live round trip: {args.model}",
+            f"## Live round trip: {name}",
             "",
-            f"Sent {live['sent']}; all values restored in {live['all_restored']}; model "
-            f"dropped every token in {live['dropped']}; unknown tokens seen "
-            f"{live['unknown_tokens']}.",
+            f"Replies scored: {live['sent']}. Every value restored: {live['all_restored']}. "
+            f"Some restored: {live['partly_restored']}. None restored: {live['dropped']}. "
+            f"Unknown tokens seen: {live['unknown_tokens']}. Request errors: {live['errors']}.",
         ]
+        if args.record or args.replay:  # a live run's numbers belong with its recording
+            print("\n".join(lines[-3:]))
+            return
     out = ROOT / "results" / "benchmark.md"
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
     print(out.read_text())
