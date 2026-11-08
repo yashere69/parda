@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Output is UTF-8 even when redirected on Windows, where it used to follow the code page
+  and fail on Devanagari text.
+- CI runs the tests on Windows and macOS as well as Linux.
+
 ## 0.3.0
 
 - Phone numbers grouped 3-3-4 (`987 654 3210`) are detected.
