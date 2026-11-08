@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.3.0
+
+- Phone numbers grouped 3-3-4 (`987 654 3210`) are detected.
+- A ten-digit number whose nearest keyword is a reference word (order, invoice, AWB, UTR,
+  booking…) is no longer redacted as a phone; a nearer call word still wins. Phone
+  precision on the benchmark goes from 84.9% to 100%.
+- `wa.me/91…` and `+91…` numbers in a phone context are phones, not Aadhaar numbers that
+  happened to pass the Verhoeff check.
+- `examples/heldout.jsonl`: 105 messages written after tuning, with a regression test.
+- `tools/compare_presidio.py`: parda and Presidio on the same messages.
+- Live round trips: `--record` saves each reply, `--replay` re-scores a saved run without a
+  model; replies are counted as fully, partly or not restored; request errors no longer
+  abort the run.
+
 ## 0.2.0
 
 - `ignore=` / `--ignore`: never redact values in your own formats (order ids)
