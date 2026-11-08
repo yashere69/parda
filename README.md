@@ -113,9 +113,12 @@ recognisers and spaCy `en_core_web_sm`. Cells are precision / recall:
 | GSTIN | 100% / 100% | 100% / 100% | 100% / 100% | 100% / 100% |
 | Phone | 100% / 100% | 80% / 74% | 100% / 82% | 69% / 100% |
 
-Presidio uses libphonenumber, so it finds the landlines and odd groupings parda misses. It
-pays for that with false positives on reference numbers, and raising its score threshold to
-0.5 cuts its phone recall to 27%. It misses spaced and Devanagari-digit Aadhaar numbers.
+The table uses Presidio's default threshold. At a score threshold of 0.5 its PAN results
+match parda's (100% / 100% on both sets), so the PAN gap above is a threshold setting, not
+a detector gap. Phone is where the trade-off is real: Presidio uses libphonenumber, so it
+finds the landlines and odd groupings parda misses, pays for that with false positives on
+reference numbers, and at 0.5 its phone recall falls to 26–27%. At either threshold it
+misses spaced and Devanagari-digit Aadhaar numbers.
 The two combine: Presidio spans can be passed to parda through `extra=`.
 
 **Round trip.** The share of replies with every value restored, after the tokens are
