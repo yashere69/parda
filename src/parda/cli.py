@@ -48,7 +48,11 @@ def main(argv: list[str] | None = None) -> int:
         if args.text is not None:
             text = args.text
         else:  # bytes, so a Windows code page can't mangle Devanagari on the way in
-            text = sys.stdin.buffer.read().decode("utf-8-sig")
+            try:
+                text = sys.stdin.buffer.read().decode("utf-8-sig")
+            except UnicodeDecodeError as e:
+                print(f"error: stdin is not UTF-8 text (byte {e.start})", file=sys.stderr)
+                return 2
         try:
             p = Parda(style=args.style, ignore=args.ignore)
         except re.error as e:
