@@ -46,7 +46,16 @@ _REFERENCE = re.compile(
     r"|pnr|ticket|receipt|consignment|docket|shipment|sku)\b|ऑर्डर",
     re.I,
 )
-_CALLABLE = re.compile(r"\b(call|phone|mobile|mob|whatsapp|contact|cell|sms)\b|फोन|कॉल", re.I)
+_CALLABLE = re.compile(
+    r"\b(call|phone|mobile|mob|whatsapp|contact|cell|sms)\b|फोन|कॉल"
+    # "mera number", "my no.": a number someone calls their own is theirs to be called on,
+    # while "order number" stays a reference because "order" is the nearer keyword
+    r"|\b(mera|meri|mere|my|apna|apni)\s+(number|no|num|nmbr)\b|मेरा नंबर",
+    re.I,
+)
+# The look-back window stops at the end of the previous sentence, so an "order" in
+# "order nahi aaya. Mera number ..." doesn't decide what the next sentence's number is.
+_SENTENCE_END = re.compile(r"[.!?।\n]\s")
 _CARD = re.compile(rf"{_B}(?:[0-9][ -]?){{12,18}}[0-9]{_E}")
 _PIN = re.compile(rf"{_B}[1-9][0-9]{{2}} ?[0-9]{{3}}{_E}")
 _PIN_CONTEXT = re.compile(r"\b(pin|pincode|pin code|postal|zip)\b|पिन", re.I)
@@ -80,6 +89,9 @@ def _phone(original: str, ascii_text: str) -> list[Span]:
     out = []
     for m in _PHONE.finditer(ascii_text):
         window = ascii_text[max(0, m.start() - 30) : m.start()]
+        ends = list(_SENTENCE_END.finditer(window))
+        if ends:
+            window = window[ends[-1].end() :]
         ref = [x.end() for x in _REFERENCE.finditer(window)]
         call = [x.end() for x in _CALLABLE.finditer(window)]
         if ref and (not call or ref[-1] > call[-1]):

@@ -28,6 +28,16 @@ def kinds(text):
         ("order ke liye call karo 98765 43210", [("PHONE", "9876543210")]),
         # account numbers stay redacted: better a wrong label than a leak
         ("account no 9876543210", [("PHONE", "9876543210")]),
+        # regressions found by running parda on the portfolio site: an "order" in the
+        # previous sentence vetoed the phone number in the next one...
+        ("Bhaiya order nahi aaya. Mera number 98765 43210 hai", [("PHONE", "9876543210")]),
+        ("order nahi aaya! mera no 9876543210", [("PHONE", "9876543210")]),
+        ("ऑर्डर नहीं आया। मेरा नंबर 98765 43210 है", [("PHONE", "9876543210")]),
+        # ...and "mera number" didn't count as a reason to call
+        ("order late hai, mera number 98765 43210", [("PHONE", "9876543210")]),
+        # a reference keyword in the same sentence still wins when it's nearer
+        ("mera order number 9876543210 hai", []),
+        ("order 9876543210. Kab aayega?", []),
         # regression from the held-out set: wa.me/91... read as an Aadhaar number
         ("chat here wa.me/916546507669", [("PHONE", "6546507669")]),
         ("Aadhaar 9165 4650 7669", [("AADHAAR", "916546507669")]),
