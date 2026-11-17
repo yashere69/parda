@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.3.2
+
+- A phone number in a sentence that follows one mentioning an order ("order nahi aaya.
+  Mera number 98765 43210 hai") is redacted again. The reference-word check no longer
+  looks past the end of the previous sentence, and "mera number" / "my no" / मेरा नंबर
+  count as call words.
+
 ## 0.3.1
 
 - Output is UTF-8 even when redirected on Windows, where it used to follow the code page

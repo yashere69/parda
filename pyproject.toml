@@ -1,6 +1,6 @@
 [project]
 name = "parda"
-version = "0.3.1"
+version = "0.3.2"
 description = "Reversible pseudonymisation of Indian personal data before it reaches an LLM, with a round-trip benchmark."
 readme = "README.md"
 license = { text = "MIT" }
